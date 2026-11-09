@@ -1,0 +1,13 @@
+runbook_id,title,item_order,item_type,text,why,confirm
+rb-password,Forgot password or locked out,1,prerequisite,I have my phone or another verification method I set up before,The reset page asks you to prove it is you.,
+rb-password,Forgot password or locked out,2,step,Go to the Northbridge password reset page and choose Forgot my password.,Self-service reset fixes this in minutes without waiting for a technician.,Did you open the reset page?
+rb-password,Forgot password or locked out,3,step,"Verify your identity with the method on your phone, then choose a new password.",Verification protects your account from someone pretending to be you.,Did you verify and set a new password?
+rb-password,Forgot password or locked out,4,escalate_if,You no longer have access to any verification method.,,
+rb-wifi,Wi-Fi won't connect (Windows 10 or 11),1,prerequisite,I know the Wi-Fi network name and password,One step has you forget the network and sign back in.,
+rb-wifi,Wi-Fi won't connect (Windows 10 or 11),2,prerequisite,I saved any open work,A later step restarts the computer.,
+rb-wifi,Wi-Fi won't connect (Windows 10 or 11),3,step,Click the network icon on the taskbar and make sure Wi-Fi is on and Airplane mode is off.,"A switched-off adapter or Airplane mode is the most common cause, and the fastest to rule out.",Did you check that Wi-Fi is on and Airplane mode is off?
+rb-wifi,Wi-Fi won't connect (Windows 10 or 11),4,step,"Open Settings > Network & internet > Wi-Fi > Manage known networks, select your network, choose Forget, then reconnect and enter the password.",A saved network profile can go stale after a password or router change. Rejoining creates a fresh one.,Did you forget the network and reconnect with the password?
+rb-wifi,Wi-Fi won't connect (Windows 10 or 11),5,step,"Check whether another device (your phone, for example) can connect to the same Wi-Fi.","If no device can connect, the problem is the network, not your computer.",Did you test the Wi-Fi on another device?
+rb-wifi,Wi-Fi won't connect (Windows 10 or 11),6,step,Restart your computer.,A restart reloads the network adapter and clears temporary errors.,Did you restart and try connecting again?
+rb-wifi,Wi-Fi won't connect (Windows 10 or 11),7,step,"Open Settings > Windows Update and install any available updates, then restart.",Updates often include fixed network adapter drivers.,Did you install updates and restart?
+rb-wifi,Wi-Fi won't connect (Windows 10 or 11),8,escalate_if,"No other device can connect either, or none of the steps worked.",,

@@ -1,0 +1,69 @@
+article_id,title,body
+kb-001-password-reset,Reset your password,"# Reset your password
+
+Use self-service reset if you forgot your password or it expired. You need the phone or verification method you registered.
+
+1. Go to the Northbridge password reset page from the sign-in screen and choose ""Forgot my password.""
+2. Enter your work email and complete the verification code sent to your phone or authenticator app.
+3. Choose a new password: at least 12 characters, not used before, and not your name.
+4. Sign in everywhere again with the new password, including your phone's email app.
+
+IT will never ask for your password. If you no longer have any verification method, ask TierZero to open a ticket.
+"
+kb-005-mfa-setup,Set up multi-factor authentication (MFA),"# Set up multi-factor authentication (MFA)
+
+Northbridge requires MFA for email, VPN, and all company apps.
+
+1. Install the Microsoft Authenticator app on your phone from the App Store or Google Play.
+2. On your computer, sign in to your Northbridge account and open Security info.
+3. Choose ""Add sign-in method,"" pick Authenticator app, and scan the QR code with your phone.
+4. Approve the test notification on your phone.
+5. Add a second method, such as a phone number, in case you lose your phone.
+
+New phone? Add the app on the new phone before you reset the old one. If you already lost access, ask TierZero to open a ticket.
+"
+kb-010-vpn-setup,Connect to the VPN,"# Connect to the VPN
+
+Use the VPN when you work outside the office and need company systems.
+
+1. Install the Northbridge VPN app from the Company Portal (Windows) or Self Service (Mac). Do not download VPN apps from other websites.
+2. Open the app and enter the server address vpn.northbridge.example.
+3. Sign in with your work email and password.
+4. Approve the MFA prompt on your phone.
+5. Wait for the status to show Connected before opening company systems.
+
+If it fails, check that your internet works without the VPN first. If you see ""authentication failed,"" reset your password (kb-001-password-reset). If it still fails, ask TierZero to open a ticket.
+"
+kb-015-office-wifi,Connect to office Wi-Fi,"# Connect to office Wi-Fi
+
+Northbridge has two networks: NB-Staff for company laptops and NB-Guest for visitors and personal devices.
+
+1. Click the Wi-Fi icon on your taskbar (Windows) or menu bar (Mac).
+2. Choose NB-Staff on a company laptop. Choose NB-Guest on a personal device and accept the terms page.
+3. On NB-Staff, sign in with your work email and password if asked.
+4. Wait up to a minute for the connection to finish.
+
+If it says ""connected, no internet"" or keeps dropping, TierZero can walk you through the Wi-Fi guided fix.
+"
+kb-020-approved-ai-tools,Approved AI tools at Northbridge,"# Approved AI tools at Northbridge
+
+Only use AI tools that IT has approved, and only with the company account.
+
+1. Approved: Microsoft 365 Copilot and Claude through the company's single sign-on. Sign in with your work email, never a personal account.
+2. Do not paste customer data, passwords, financial records, or employee personal information into any AI tool.
+3. Check AI output before you share it. AI tools can be wrong.
+4. To request a new AI tool, ask TierZero to open a ticket with the tool's name and what you need it for. Security reviews each request.
+
+Using an unapproved AI tool with company data breaks the acceptable use policy.
+"
+kb-025-printer,Add an office printer,"# Add an office printer
+
+Office printers are named by floor, for example NB-PRINT-3 for the third floor.
+
+1. Connect to NB-Staff Wi-Fi or plug into the office network. Printers do not work over NB-Guest or the VPN.
+2. Windows: open Settings, then Bluetooth & devices, then Printers & scanners, and choose Add device. Mac: open System Settings, then Printers & Scanners, and choose Add Printer.
+3. Pick the printer for your floor from the list.
+4. Print a test page.
+
+If the printer is jammed, out of toner, or shows an error light, ask TierZero to open a ticket with the printer's name.
+"

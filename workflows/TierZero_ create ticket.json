@@ -1,0 +1,328 @@
+{
+  "name": "TierZero: create ticket",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "summary"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "priority"
+            },
+            {
+              "name": "session_id"
+            },
+            {
+              "name": "user_message"
+            },
+            {
+              "name": "source"
+            }
+          ]
+        }
+      },
+      "id": "dcdff29e-4994-4519-8818-f6777a32c1be",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check ticket rules: limits the AI cannot talk its way past\nconst CATEGORIES = [\"account\", \"network\", \"hardware\", \"software\", \"ai_tools\", \"security\", \"other\"];\nconst SUSPICIOUS = /ignore (all |any |your |the )?(previous |prior |above )?(instructions|rules)|you are now|system (message|prompt|override)|developer mode|admin mode|new instructions/i;\n\nconst t = $input.first().json;\nconst asked = String(t.priority ?? \"\").toLowerCase().trim();\nconst category = String(t.category ?? \"\").toLowerCase().trim().replace(/\\s+/g, \"_\");  // \"AI Tools\" becomes \"ai_tools\"\nconst flagged = SUSPICIOUS.test(`${t.user_message ?? \"\"} ${t.summary ?? \"\"}`);\n\nlet summary = String(t.summary ?? \"\").slice(0, 1000);        // keep summaries a sensible length\nif (asked === \"high\") summary = \"[AI suggested high priority] \" + summary;\nif (flagged) summary = \"[Needs review: this request contained text aimed at the AI] \" + summary;\n\nreturn [{\n  json: {\n    // a blank session never matches another blank session, so it cannot block a ticket\n    session_id: String(t.session_id ?? \"\").trim() || `no-session-${$execution.id}`,\n    summary,\n    category: CATEGORIES.includes(category) ? category : \"other\",     // unknown values become \"other\"\n    priority: asked === \"low\" ? \"low\" : \"medium\",                       // never high: a technician decides that\n    needs_review: flagged || asked === \"high\",\n    source: String(t.source ?? \"unknown\"),                             // \"test\" rows are easy to clear later\n  },\n}];"
+      },
+      "id": "4715c5a4-85b3-4701-b1f4-24d96d9b6c74",
+      "name": "Check ticket rules",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "8T4VrPx7Ak3czlqz",
+          "cachedResultName": "escalations"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "session_id",
+              "keyValue": "={{ $('Check ticket rules').item.json.session_id }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "f343db06-9472-436f-8154-69e6fd592526",
+      "name": "Find existing ticket",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        96
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has-id",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8693a764-4ce3-448c-a86e-4405237e01c8",
+      "name": "Ticket already sent?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "result",
+              "type": "string",
+              "value": "A ticket was already sent for this conversation. Do not create another."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "214d72f3-f81e-4c47-ad28-011e6da80856",
+      "name": "Already sent",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "8T4VrPx7Ak3czlqz",
+          "cachedResultName": "escalations"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $('Check ticket rules').item.json.session_id }}",
+            "summary": "={{ $('Check ticket rules').item.json.summary }}",
+            "category": "={{ $('Check ticket rules').item.json.category }}",
+            "priority": "={{ $('Check ticket rules').item.json.priority }}",
+            "needs_review": "={{ $('Check ticket rules').item.json.needs_review }}",
+            "source": "={{ $('Check ticket rules').item.json.source }}"
+          },
+          "schema": [
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "needs_review",
+              "displayName": "needs_review",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "43bf1316-a9f7-4532-8f7a-5ea7750195bf",
+      "name": "Insert ticket",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r2",
+              "name": "result",
+              "type": "string",
+              "value": "=Ticket TZ-{{ $json.id }} was sent to the IT team."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e588c9e3-fc20-486e-b1e7-af18e29180ef",
+      "name": "Ticket sent",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        192
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Check ticket rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check ticket rules": {
+      "main": [
+        [
+          {
+            "node": "Find existing ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find existing ticket": {
+      "main": [
+        [
+          {
+            "node": "Ticket already sent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket already sent?": {
+      "main": [
+        [
+          {
+            "node": "Already sent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert ticket": {
+      "main": [
+        [
+          {
+            "node": "Ticket sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "f7de3774-d1fc-4de3-a872-2f1e6d36edf0",
+  "meta": {
+    "instanceId": "754bb24a23c3f71c1bd2decb84accab8d7fe2705d93b82d4d723cad1bb08b502"
+  },
+  "nodeGroups": [],
+  "id": "82kl3yLaKkaSnu3A",
+  "tags": []
+}
